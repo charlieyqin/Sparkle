@@ -284,6 +284,19 @@ static NSString *SUUpdaterDefaultsObservationContext = @"SUUpdaterDefaultsObserv
 	return [host boolForUserDefaultsKey:SUAutomaticallyUpdateKey];
 }
 
+- (void)setNeedsRelaunchAfterInstall:(BOOL)needsRelaunchAfterInstall
+{
+	dontRestartAfterInstall = !needsRelaunchAfterInstall;
+}
+
+- (BOOL)needsRelaunchAfterInstall
+{
+	if ([host objectForInfoDictionaryKey:SURelaunchAfterInstallKey])
+		return [host boolForInfoDictionaryKey:SURelaunchAfterInstallKey];
+	else
+		return !dontRestartAfterInstall;
+}
+
 - (void)setFeedURL:(NSURL *)feedURL
 {
 	[host setObject:[feedURL absoluteString] forUserDefaultsKey:SUFeedURLKey];

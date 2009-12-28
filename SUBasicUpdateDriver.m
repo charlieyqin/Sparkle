@@ -248,7 +248,13 @@
 - (void)installerFinishedForHost:(SUHost *)aHost
 {
 	if (aHost != host) { return; }
-	[self relaunchHostApp];
+	
+	if ([updater needsRelaunchAfterInstall])
+		[self relaunchHostApp];
+	else if ([[updater delegate] respondsToSelector:@selector(updater:hasFinishedInstallforUdpate:)]) {
+		[[updater delegate] updater:updater hasFinishedInstallforUdpate:updateItem];
+		[self cleanUp];
+	}
 }
 
 - (void)relaunchHostApp

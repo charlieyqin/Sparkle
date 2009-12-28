@@ -73,9 +73,8 @@
 
 - (void)installerFinishedForHost:(SUHost *)aHost
 {
-	if (aHost != host) { return; }
 	if (!postponingInstallation)
-		[self relaunchHostApp];
+		[super installerFinishedForHost:aHost];
 }
 
 - (void)abortUpdateWithError:(NSError *)error

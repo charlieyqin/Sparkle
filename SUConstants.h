@@ -26,6 +26,7 @@ extern NSString *SUAutomaticallyUpdateKey;
 extern NSString *SUAllowsAutomaticUpdatesKey;
 extern NSString *SUEnableAutomaticChecksKey;
 extern NSString *SUEnableAutomaticChecksKeyOld;
+extern NSString *SURelaunchAfterInstallKey;
 extern NSString *SUEnableSystemProfilingKey;
 extern NSString *SUSendProfileInfoKey;
 extern NSString *SULastProfileSubmitDateKey;

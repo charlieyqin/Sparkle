@@ -26,6 +26,7 @@ NSString *SUAllowsAutomaticUpdatesKey = @"SUAllowsAutomaticUpdates";
 NSString *SUEnableSystemProfilingKey = @"SUEnableSystemProfiling";
 NSString *SUEnableAutomaticChecksKey = @"SUEnableAutomaticChecks";
 NSString *SUEnableAutomaticChecksKeyOld = @"SUCheckAtStartup";
+NSString *SURelaunchAfterInstallKey = @"SURelaunchAfterInstallKey";
 NSString *SUSendProfileInfoKey = @"SUSendProfileInfo";
 NSString *SULastProfileSubmitDateKey = @"SULastProfileSubmissionDate";
 

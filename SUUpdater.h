@@ -18,6 +18,7 @@
 
 	NSString *customUserAgentString;
 	SUHost *host;
+	BOOL dontRestartAfterInstall;
 	IBOutlet id delegate;
 }
 
@@ -47,6 +48,9 @@
 
 - (void)setAutomaticallyDownloadsUpdates:(BOOL)automaticallyDownloadsUpdates;
 - (BOOL)automaticallyDownloadsUpdates;
+
+- (void)setNeedsRelaunchAfterInstall:(BOOL)needsRelaunchAfterInstall;
+- (BOOL)needsRelaunchAfterInstall;
 
 // This IBAction is meant for a main menu item. Hook up any menu item to this action,
 // and Sparkle will check for updates and report back its findings verbosely.
@@ -92,6 +96,9 @@
 
 // Sent immediately before installing the specified update.
 - (void)updater:(SUUpdater *)updater willInstallUpdate:(SUAppcastItem *)update;
+
+// Sent after install finishes if needsRelaunchAfterInstall is NO
+- (void)updater:(SUUpdater *)updater hasFinishedInstallforUdpate:(SUAppcastItem *)update;
 
 // Return YES to delay the relaunch until you do some processing; invoke the given NSInvocation to continue.
 - (BOOL)updater:(SUUpdater *)updater shouldPostponeRelaunchForUpdate:(SUAppcastItem *)update untilInvoking:(NSInvocation *)invocation;

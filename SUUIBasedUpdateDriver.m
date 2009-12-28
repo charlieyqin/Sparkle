@@ -135,7 +135,8 @@
 	[statusController beginActionWithTitle:SULocalizedString(@"Ready to Install", nil) maxProgressValue:1 statusText:nil];
 	[statusController setProgressValue:1]; // Fill the bar.
 	[statusController setButtonEnabled:YES];
-	[statusController setButtonTitle:SULocalizedString(@"Install and Relaunch", nil) target:self action:@selector(installAndRestart:) isDefault:YES];
+	NSString *buttonTitle = [updater needsRelaunchAfterInstall] ? SULocalizedString(@"Install and Relaunch", nil) : SULocalizedString(@"Install", nil);
+	[statusController setButtonTitle:buttonTitle target:self action:@selector(installAndRestart:) isDefault:YES];
 	[NSApp requestUserAttention:NSInformationalRequest];	
 }
 
