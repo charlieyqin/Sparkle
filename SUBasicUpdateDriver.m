@@ -34,7 +34,7 @@
 	[appcast fetchAppcastFromURL:URL];
 }
 
-- (id <SUVersionComparison>)_versionComparator
+- (id <SUVersionComparison>)versionComparator
 {
 	id <SUVersionComparison> comparator = nil;
 	
@@ -51,7 +51,7 @@
 
 - (BOOL)isItemNewer:(SUAppcastItem *)ui
 {
-	return [[self _versionComparator] compareVersion:[host version] toVersion:[ui versionString]] == NSOrderedAscending;
+	return [[self versionComparator] compareVersion:[host version] toVersion:[ui versionString]] == NSOrderedAscending;
 }
 
 - (BOOL)hostSupportsItem:(SUAppcastItem *)ui
@@ -64,7 +64,7 @@
 {
 	NSString *skippedVersion = [host objectForUserDefaultsKey:SUSkippedVersionKey];
 	if (skippedVersion == nil) { return NO; }
-	return [[self _versionComparator] compareVersion:[ui versionString] toVersion:skippedVersion] != NSOrderedDescending;
+	return [[self versionComparator] compareVersion:[ui versionString] toVersion:skippedVersion] != NSOrderedDescending;
 }
 
 - (BOOL)itemContainsValidUpdate:(SUAppcastItem *)ui
@@ -232,7 +232,7 @@
 		[[updater delegate] updater:updater willInstallUpdate:updateItem];
 	
 	// Copy the relauncher into a temporary directory so we can get to it after the new version's installed.
-	NSString *relaunchPathToCopy = [[NSBundle bundleForClass:[self class]] pathForResource:@"relaunch" ofType:@""];
+	NSString *relaunchPathToCopy = [SPARKLE_BUNDLE pathForResource:@"relaunch" ofType:@""];
 	NSString *targetPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[relaunchPathToCopy lastPathComponent]];
 	// Only the paranoid survive: if there's already a stray copy of relaunch there, we would have problems.
 	NSError *error = nil;
@@ -247,7 +247,7 @@
 	else
 		[self abortUpdateWithError:[NSError errorWithDomain:SUSparkleErrorDomain code:SURelaunchError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SULocalizedString(@"An error occurred while extracting the archive. Please try again later.", nil), NSLocalizedDescriptionKey, [NSString stringWithFormat:@"Couldn't copy relauncher (%@) to temporary path (%@)! %@", relaunchPathToCopy, targetPath, (error ? [error localizedDescription] : @"")], NSLocalizedFailureReasonErrorKey, nil]]];
 	
-	[SUInstaller installFromUpdateFolder:[downloadPath stringByDeletingLastPathComponent] overHost:host delegate:self synchronously:[self shouldInstallSynchronously] versionComparator:[self _versionComparator]];
+	[SUInstaller installFromUpdateFolder:[downloadPath stringByDeletingLastPathComponent] overHost:host delegate:self synchronously:[self shouldInstallSynchronously] versionComparator:[self versionComparator]];
 }
 
 - (void)installerFinishedForHost:(SUHost *)aHost

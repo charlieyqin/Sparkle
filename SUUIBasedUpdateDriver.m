@@ -14,6 +14,13 @@
 
 @implementation SUUIBasedUpdateDriver
 
+- (IBAction)cancelDownload:sender
+{
+	if (download)
+		[download cancel];
+	[self abortUpdate];
+}
+
 - (void)didFindValidUpdate
 {
 	updateAlert = [[SUUpdateAlert alloc] initWithAppcastItem:updateItem host:host];
@@ -80,7 +87,7 @@
 	[statusController setMaxProgressValue:[response expectedContentLength]];
 }
 
-- (NSString *)_humanReadableSizeFromDouble:(double)value
+- (NSString *)humanReadableSizeFromDouble:(double)value
 {
 	if (value < 1000)
 		return [NSString stringWithFormat:@"%.0lf %@", value, SULocalizedString(@"B", @"the unit for bytes")];
@@ -98,16 +105,9 @@
 {
 	[statusController setProgressValue:[statusController progressValue] + (double)length];
 	if ([statusController maxProgressValue] > 0.0)
-		[statusController setStatusText:[NSString stringWithFormat:SULocalizedString(@"%@ of %@", nil), [self _humanReadableSizeFromDouble:[statusController progressValue]], [self _humanReadableSizeFromDouble:[statusController maxProgressValue]]]];
+		[statusController setStatusText:[NSString stringWithFormat:SULocalizedString(@"%@ of %@", nil), [self humanReadableSizeFromDouble:[statusController progressValue]], [self humanReadableSizeFromDouble:[statusController maxProgressValue]]]];
 	else
-		[statusController setStatusText:[NSString stringWithFormat:SULocalizedString(@"%@ downloaded", nil), [self _humanReadableSizeFromDouble:[statusController progressValue]]]];
-}
-
-- (IBAction)cancelDownload:sender
-{
-	if (download)
-		[download cancel];
-	[self abortUpdate];
+		[statusController setStatusText:[NSString stringWithFormat:SULocalizedString(@"%@ downloaded", nil), [self humanReadableSizeFromDouble:[statusController progressValue]]]];
 }
 
 - (void)extractUpdate
@@ -134,6 +134,8 @@
 	[statusController setProgressValue:[statusController progressValue] + (double)length];
 }
 
+- (void)installAndRestart:sender { [self installUpdate]; }
+
 - (void)unarchiverDidFinish:(SUUnarchiver *)ua
 {
 	[statusController beginActionWithTitle:SULocalizedString(@"Ready to Install", nil) maxProgressValue:1.0 statusText:nil];
@@ -143,8 +145,6 @@
 	[statusController setButtonTitle:buttonTitle target:self action:@selector(installAndRestart:) isDefault:YES];
 	[NSApp requestUserAttention:NSInformationalRequest];	
 }
-
-- (void)installAndRestart:sender { [self installUpdate]; }
 
 - (void)installUpdate
 {

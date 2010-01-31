@@ -13,17 +13,12 @@
 
 @implementation SUDiskImageUnarchiver
 
-+ (BOOL)_canUnarchivePath:(NSString *)path
++ (BOOL)canUnarchivePath:(NSString *)path
 {
 	return [[path pathExtension] isEqualToString:@"dmg"];
 }
 
-- (void)start
-{
-	[NSThread detachNewThreadSelector:@selector(_extractDMG) toTarget:self withObject:nil];
-}
-
-- (void)_extractDMG
+- (void)extractDMG
 {		
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL mountedSuccessfully = NO;
@@ -38,9 +33,12 @@
 		if (uuid)
 		{
 			CFStringRef uuidString = CFUUIDCreateString(NULL, uuid);
+			if (uuidString)
+			{
+				mountPoint = [@"/Volumes" stringByAppendingPathComponent:(NSString*)uuidString];
+				CFRelease(uuidString);
+			}
 			CFRelease(uuid);
-			mountPoint = [@"/Volumes" stringByAppendingPathComponent:(NSString*)uuidString];
-			CFRelease(uuidString);
 		}
 	}
 	while (noErr == FSPathMakeRefWithOptions((UInt8 *)[mountPoint fileSystemRepresentation], kFSPathMakeRefDoNotFollowLeafSymlink, &tmpRef, NULL));
@@ -65,11 +63,11 @@
 	err = FSCopyObjectSync(&srcRef, &dstRef, (CFStringRef)mountPointName, NULL, kFSFileOperationSkipSourcePermissionErrors);
 	if (err != noErr) goto reportError;
 	
-	[self performSelectorOnMainThread:@selector(_notifyDelegateOfSuccess) withObject:nil waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(notifyDelegateOfSuccess) withObject:nil waitUntilDone:NO];
 	goto finally;
 	
 reportError:
-	[self performSelectorOnMainThread:@selector(_notifyDelegateOfFailure) withObject:nil waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(notifyDelegateOfFailure) withObject:nil waitUntilDone:NO];
 
 finally:
 	if (mountedSuccessfully)
@@ -77,9 +75,14 @@ finally:
 	[pool drain];
 }
 
+- (void)start
+{
+	[NSThread detachNewThreadSelector:@selector(extractDMG) toTarget:self withObject:nil];
+}
+
 + (void)load
 {
-	[self _registerImplementation:self];
+	[self registerImplementation:self];
 }
 
 @end
