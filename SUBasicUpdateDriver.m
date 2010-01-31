@@ -258,6 +258,7 @@
 		[self relaunchHostApp];
 	else if ([[updater delegate] respondsToSelector:@selector(updater:hasFinishedInstallforUdpate:)]) {
 		[[updater delegate] updater:updater hasFinishedInstallforUdpate:updateItem];
+		[self setValue:[NSNumber numberWithBool:YES] forKey:@"finished"];
 		[self cleanUp];
 	}
 }
